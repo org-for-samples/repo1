@@ -35,6 +35,16 @@ jobs:
       - name: チェックアウト
         uses: actions/checkout@v4
 
+      - name: IssueTemplateをチェックアウト
+        uses: actions/checkout@v4
+        with:
+          repository: "org-for-samples/.github"
+          path: "util"
+      
+      - name: チェックアウト状態の確認
+        run: |
+          ls -a
+
       - name: 現在のOpenAPI Generatorのバージョン取得
         id: get-current-openapi-generator-version
         run: |
@@ -82,7 +92,7 @@ jobs:
         with:
           action: dblock/create-a-github-issue@c5e54b8762a0c4c2cd9330750e30b81bcc369c38  # v3.2.0
           with: |
-            filename: .github/ISSUE_TEMPLATE/99-openapi-generator-update-issue.md
+            filename: util/.github/.github/ISSUE_TEMPLATE/99-openapi-generator-update-issue.md
             update_existing: true
             search_existing: open
           attempt_limit: 3
