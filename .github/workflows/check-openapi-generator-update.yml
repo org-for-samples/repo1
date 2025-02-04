@@ -44,6 +44,8 @@ jobs:
       - name: チェックアウト状態の確認
         run: |
           ls -a
+          echo ""
+          ls -a util
 
       - name: 現在のOpenAPI Generatorのバージョン取得
         id: get-current-openapi-generator-version
