@@ -21,7 +21,7 @@ jobs:
       - name: マトリクスの定義
         id: matrix
         run: |
-          echo 'packaging_project_name=["Maris.Logging.Testing"]' >> $GITHUB_OUTPUT
+          echo 'packaging_project_name=["Maris.Logging.Testing", "Maris.DummyPackage"]' >> $GITHUB_OUTPUT
 
   packaging:
     name: パッケージング
@@ -38,6 +38,8 @@ jobs:
       - name: パッケージの作成
         run: |
           mkdir ${{ matrix.packaging_project_name }}
+          cd ${{ matrix.packaging_project_name }}
+          echo 'test' > test.txt
 
       - name: ビルドアーティファクトのアップロード
         uses: actions/upload-artifact@v4
