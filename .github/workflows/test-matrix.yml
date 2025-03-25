@@ -1,0 +1,83 @@
+name: Maris.Logging.Testing リリース
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags: 
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-Beta[0-9]+'
+
+env:
+  PACKAGING_PROJECT_NAME: Maris.Logging.Testing
+  PACKAGE_ARTIFACT_NAME: packages
+
+jobs:
+  define-matrix:
+    runs-on: ubuntu-latest
+
+    outputs:
+      packaging_project_name: ${{ steps.matrix.outputs.packaging_project_name }}
+
+    steps:
+      - name: マトリクスの定義
+        id: matrix
+        run: |
+          echo 'packaging_project_name=["Maris.Logging.Testing"]' >> $GITHUB_OUTPUT
+
+  packaging:
+    name: パッケージング
+    strategy:
+      fail-fast: false
+      matrix:
+        packaging_project_name: ${{ fromJSON(needs.define-matrix.outputs.packaging_project_name) }}
+    runs-on: ubuntu-latest
+    env:
+      BUILD_CONFIGURATION: Release
+
+    steps:
+      - name: パッケージの作成
+        run: |
+          mkdir ${{ matrix.packaging_project_name }}
+
+      - name: ビルドアーティファクトのアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.packaging_project_name }}
+          path: ${{ matrix.packaging_project_name }}/
+          retention-days: 3
+
+  release-to-nuget:
+    name: NuGet へのリリース
+    strategy:
+      fail-fast: false
+      matrix:
+        packaging_project_name: ${{ fromJSON(needs.define-matrix.outputs.packaging_project_name) }}
+    runs-on: ubuntu-latest
+    needs: [packaging, define-matrix]
+
+    steps:
+      - name: ビルドアーティファクトのダウンロード
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.packaging_project_name }}
+
+  release-to-github:
+    name: GitHub へのリリース
+    strategy:
+      fail-fast: false
+      matrix:
+        packaging_project_name: ${{ fromJSON(needs.define-matrix.outputs.packaging_project_name) }}
+    runs-on: ubuntu-latest
+    needs: [packaging, release-to-nuget, define-matrix]
+
+    steps:
+      - name: ビルドアーティファクトのダウンロード
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.packaging_project_name }}
+      
+      - name: echo matrix
+        run: |
+          echo ${{ matrix.packaging_project_name }}
