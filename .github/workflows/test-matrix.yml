@@ -78,6 +78,6 @@ jobs:
         with:
           name: ${{ matrix.packaging_project_name }}
       
-      - name: echo matrix
+      - name: echo ls
         run: |
-          echo ${{ matrix.packaging_project_name }}
+          ls -a
