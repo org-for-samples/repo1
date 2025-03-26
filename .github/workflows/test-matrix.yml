@@ -1,8 +1,5 @@
 name: リリースパイプラインのテスト
 
-permissions:
-  contents: write
-
 on:
   workflow_dispatch:
 
@@ -81,6 +78,8 @@ jobs:
 
   release-to-github:
     name: GitHub へのリリース
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
