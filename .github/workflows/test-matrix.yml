@@ -1,4 +1,4 @@
-name: Maris.Logging.Testing リリース
+name: リリースパイプラインのテスト
 
 permissions:
   contents: write
@@ -39,7 +39,7 @@ jobs:
         run: |
           mkdir ${{ matrix.packaging_project_name }}
           cd ${{ matrix.packaging_project_name }}
-          echo 'test' > test.txt
+          echo '${{ matrix.packaging_project_name }} package' > test.txt
 
       - name: ビルドアーティファクトのアップロード
         uses: actions/upload-artifact@v4
@@ -62,6 +62,22 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ matrix.packaging_project_name }}
+
+      - name: NuGet パッケージの公開
+        id: release-to-nuget
+        continue-on-error: true
+        run: echo '${{ matrix.packaging_project_name }} nuget push log' > nuget_push_log.txt
+          
+      - name: NuGet パッケージの公開結果表示
+        shell: bash
+        run: |
+          cat nuget_push_log.txt
+          echo "# NuGet release info :toolbox:" >> $GITHUB_STEP_SUMMARY
+          cat nuget_push_log.txt >> $GITHUB_STEP_SUMMARY
+
+      - name: NuGet パッケージの公開結果判定
+        if: ${{ steps.release-to-nuget.outcome == 'failure' }}
+        run: exit 1
 
   release-to-github:
     name: GitHub へのリリース
