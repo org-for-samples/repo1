@@ -10,6 +10,7 @@ env:
 jobs:
   define-matrix:
     runs-on: ubuntu-latest
+    permissions: {}
 
     outputs:
       packaging_project_name: ${{ steps.matrix.outputs.packaging_project_name }}
@@ -30,6 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BUILD_CONFIGURATION: Release
+    permissions: 
+      contents: read
 
     steps:
       - name: ブランチのチェックアウト
@@ -56,6 +59,7 @@ jobs:
         packaging_project_name: ${{ fromJSON(needs.define-matrix.outputs.packaging_project_name) }}
     runs-on: ubuntu-latest
     needs: [packaging, define-matrix]
+    permissions: {}
 
     steps:
       - name: ビルドアーティファクトのダウンロード
