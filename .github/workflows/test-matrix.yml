@@ -23,10 +23,6 @@ jobs:
         run: |
           echo 'packaging_project_name=["Maris.Logging.Testing", "Maris.DummyPackage"]' >> $GITHUB_OUTPUT
 
-      - name: サマリーにタイトル追加
-        run: |
-          echo "# NuGet release info :toolbox:" >> $GITHUB_STEP_SUMMARY
-
   packaging:
     name: パッケージング
     needs: define-matrix
@@ -75,6 +71,7 @@ jobs:
       - name: NuGet パッケージの公開結果表示
         shell: bash
         run: |
+          echo "# NuGet release info :toolbox:" >> $GITHUB_STEP_SUMMARY
           echo "## ${{ matrix.packaging_project_name }}" >> $GITHUB_STEP_SUMMARY
           cat nuget_push_log.txt >> $GITHUB_STEP_SUMMARY
 
