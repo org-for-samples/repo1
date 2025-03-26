@@ -75,7 +75,7 @@ jobs:
       - name: NuGet パッケージの公開結果表示
         shell: bash
         run: |
-          echo "## ${{ matrix.packaging_project_name }} >> $GITHUB_STEP_SUMMARY
+          echo "## ${{ matrix.packaging_project_name }}" >> $GITHUB_STEP_SUMMARY
           cat nuget_push_log.txt >> $GITHUB_STEP_SUMMARY
 
       - name: NuGet パッケージの公開結果判定
