@@ -32,6 +32,9 @@ jobs:
       BUILD_CONFIGURATION: Release
 
     steps:
+      - name: ブランチのチェックアウト
+        uses: actions/checkout@v4
+      
       - name: パッケージの作成
         run: |
           mkdir ${{ matrix.packaging_project_name }}
